@@ -1,0 +1,122 @@
+<html>
+    <head>
+			<title>25th anniversary bouldrering competition by Tekiila</title>
+	        <link rel="stylesheet" href="styles.css">
+
+        <script>
+
+
+
+				function populate(result) {
+					document.getElementById("addordelete").innerHTML = ""
+					//var result = JSON.parse(Http.responseText);
+
+
+					var value;
+					var numbers = Object.keys(result)
+
+					numbers.forEach(number => {
+						current = result[number]
+						document.getElementById("addordelete").innerHTML += number + ", " +result[number].color + ": "
+
+						
+						if (result[number].climbed === "no") {
+							var button = "<button type='button' onclick=addAscent('"+number+"');>Add ascent</button>";
+							document.getElementById("addordelete").innerHTML += button
+						}
+						else {
+							var button = "<button type='button' onclick=removeAscent('"+number+"');>Remove ascent</button>";
+							document.getElementById("addordelete").innerHTML += button
+						}
+
+						document.getElementById("addordelete").innerHTML += "<br>"
+					});
+
+				}
+
+
+				function get_ascents(){
+					const Http = new XMLHttpRequest();
+					const url='/my_ascents_json';
+					Http.open("GET", url);
+					Http.send();
+		
+					Http.onreadystatechange = (e) => {
+
+						populate(JSON.parse(Http.responseText))
+					}
+				}
+
+
+				function addAscent(number){
+					console.log(number)
+					var xhr = new XMLHttpRequest();
+					xhr.open("POST", '/add_ascent', true);
+
+					//Send the proper header information along with the request
+					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+					xhr.onreadystatechange = function() { // Call a function when the state changes.
+						if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+							// Request finished. Do processing here.
+							get_ascents();
+						}
+					}
+					xhr.send("number="+number);
+				}
+
+				function removeAscent(number){
+					console.log(number)
+					var xhr = new XMLHttpRequest();
+					xhr.open("POST", '/remove_ascent', true);
+
+					//Send the proper header information along with the request
+					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+					xhr.onreadystatechange = function() { // Call a function when the state changes.
+						if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+							// Request finished. Do processing here.
+							console.log("done")
+							get_ascents();
+						}
+					}
+					xhr.send("number="+number);
+				}
+
+
+
+		
+
+
+
+				get_ascents();
+
+				</script>
+		
+	
+	
+	</head>
+    <body class="container">
+        <div >
+            <h1>Boulder competition</h1>
+        </div>
+
+        <div class="navbar">
+            <a class="active" href="/results">Results</a>
+            <a href="/modify">Add or remove ascents</a>
+            <a href="/signup">Sign Up</a>
+
+            
+
+            <a class="onRight" href="/logout">Log Out</a>
+        </div>
+
+        <div class="container row">
+		   <h1>Here you can add and remove ascents</h1>
+		   <div id="addordelete">
+                results go here
+           </div>
+
+        </div>
+    </body>
+</html>
