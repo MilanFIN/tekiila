@@ -16,18 +16,18 @@
 					var numbers = Object.keys(result)
 
 					numbers.forEach(number => {
-						current = result[number]
-						document.getElementById("addordelete").innerHTML += number + ", " +result[number].color + ": "
 
 						
 						if (result[number].climbed === "no") {
-							var button = "<button type='button' onclick=addAscent('"+number+"');>Add ascent</button>";
+							var button = "<button type='button' class='addButton' onclick=addAscent('"+number+"');>Add ascent</button>";
 							document.getElementById("addordelete").innerHTML += button
 						}
 						else {
-							var button = "<button type='button' onclick=removeAscent('"+number+"');>Remove ascent</button>";
+							var button = "<button type='button' class='removeButton' onclick=removeAscent('"+number+"');>Remove ascent</button>";
 							document.getElementById("addordelete").innerHTML += button
 						}
+						current = result[number]
+						document.getElementById("addordelete").innerHTML += number + ", " +result[number].color
 
 						document.getElementById("addordelete").innerHTML += "<br>"
 					});
