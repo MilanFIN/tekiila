@@ -77,7 +77,8 @@ app.route('/signup')
         User.create({
             username: req.body.username,
             wholename: req.body.wholename,
-            password: req.body.password
+			password: req.body.password,
+			gender: req.body.gender
         })
         .then(user => {
             req.session.user = user.dataValues;
@@ -143,49 +144,102 @@ app.get('/result_json', (req, res) => {
 			ascentsByRoute[number].push(username)
 		});
 
-		User.findAll({attributes: ['username', 'wholename']} ).then(function (users) {
+		User.findAll({attributes: ['username', 'wholename', 'gender']} ).then(function (users) {
+
 
 			var usersAndNames = {}
 
-
 			users.forEach(function(user) {
-				usersAndNames[user.dataValues.username] = user.dataValues.wholename
-	
+				usersAndNames[user.dataValues.username] = {}
+
+				usersAndNames[user.dataValues.username].wholename = user.dataValues.wholename;
+				usersAndNames[user.dataValues.username].gender = user.dataValues.gender;
 			});
 
 
-			scores = {} // username: score, ascents
+			ascentsByRouteMen = {}
+			ascentsByRouteWomen = {}
 
-			for (var user in usersAndNames) {
-				scores[user] = {}
-				scores[user].score = 0
-				scores[user].ascents = 0
-			}
 
 			Object.keys(ascentsByRoute).forEach(function(key,index) {
-				// key: the name of the object key
-				// index: the ordinal position of the key within the object 
-
-				var users = ascentsByRoute[key];
-				for (var i = 0; i < users.length; i++) {
-					scores[users[i]].score += 100/users.length
-					scores[users[i]].ascents += 1
-
-				}
-
+				ascentsByRoute[key].forEach(function (item, index) {
+					if (usersAndNames[item].gender == "Male"){
+						if (!(key in ascentsByRouteMen)){
+							ascentsByRouteMen[key] = [];
+						}
+						ascentsByRouteMen[key].push(item)
+					}
+					else if (usersAndNames[item].gender == "Female"){
+						if (!(key in ascentsByRouteWomen)){
+							ascentsByRouteWomen[key] = [];
+						}
+						ascentsByRouteWomen[key].push(item)
+					}
+				});
 			});
 
 
 			
-			var result = [];//[];
-			for (var user in scores) {
-				result.push([usersAndNames[user], scores[user].score, scores[user].ascents]);
+			scoresMen = {} // username: score, ascents
+			scoresWomen = {} // username: score, ascents
+
+			for (var user in usersAndNames) {
+				if (usersAndNames[user].gender == "Male") {
+					scoresMen[user] = {}
+					scoresMen[user].score = 0
+					scoresMen[user].ascents = 0
+	
+				}
+				else if (usersAndNames[user].gender == "Female") {
+					scoresWomen[user] = {}
+					scoresWomen[user].score = 0
+					scoresWomen[user].ascents = 0
+	
+				}
+			}
+
+			
+			Object.keys(ascentsByRouteMen).forEach(function(key,index) {
+				var users = ascentsByRouteMen[key];
+				for (var i = 0; i < users.length; i++) {
+					scoresMen[users[i]].score += 100/users.length
+					scoresMen[users[i]].ascents += 1
+
+				}
+			});
+			Object.keys(ascentsByRouteWomen).forEach(function(key,index) {
+				var users = ascentsByRouteWomen[key];
+				for (var i = 0; i < users.length; i++) {
+					scoresWomen[users[i]].score += 100/users.length
+					scoresWomen[users[i]].ascents += 1
+
+				}
+			});
+			console.log(scoresMen);
+			console.log(scoresWomen);
+
+
+			
+			var result = {};//[];
+			result["Men"] = [];
+			result["Women"] = [];
+
+			for (var user in scoresMen) {
+				result["Men"].push([usersAndNames[user], scoresMen[user].score, scoresMen[user].ascents]);
 			}
 			
-			result.sort(function(a, b) {
+			result["Men"].sort(function(a, b) {
 				return b[1] - a[1];
-			});			
+			});		
+			for (var user in scoresWomen) {
+				result["Women"].push([usersAndNames[user], scoresWomen[user].score, scoresWomen[user].ascents]);
+			}
+			
+			result["Women"].sort(function(a, b) {
+				return b[1] - a[1];
+			});		
 			res.json(result);
+			
 		});
 	});
 });
@@ -197,8 +251,11 @@ app.get('/my_ascents_json', (req, res) => {
 		Boulder.findAll({attributes: ['number', 'color']} ).then(function (boulders) {
 
 			var result = {}
+			var numberOfAscentsByRoute = {}
 
 			boulders.forEach(function(boulder) {
+				numberOfAscentsByRoute[number] = 0
+
 				var climbed = "no";
 				var number = boulder.dataValues["number"]
 				var color = boulder.dataValues["color"]
@@ -206,15 +263,19 @@ app.get('/my_ascents_json', (req, res) => {
 				result[number] = {"color": color, "climbed": climbed};
 
 			});
+//where: { username: req.session.user.username }
+			Ascent.findAll({attributes: ["username", "number"]} ).then(function (ascents) {
+	
 
-			Ascent.findAll({where: { username: req.session.user.username }, attributes: ["username", "number"]} ).then(function (ascents) {
-	
 				ascents.forEach(function(ascent) {
-					var climbed = "yes";
-					var number = ascent.dataValues["number"]
-					var color = result[number]["color"]
-	
-					result[number] = {"color": color, "climbed": climbed};
+					if (ascent.dataValues.username == req.session.user.username){
+						var climbed = "yes";
+						var number = ascent.dataValues["number"]
+						var color = result[number]["color"]
+		
+						result[number] = {"color": color, "climbed": climbed};
+					}
+
 		
 				});
 				res.json(result)

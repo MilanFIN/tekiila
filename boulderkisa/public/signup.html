@@ -25,16 +25,23 @@
 
                 <form action="/signup" method="post">
                     <div>
-                        <label>Username:</label>
-                        <input type="text" name="username"/>
+                        <label>Full Name:</label>
+                        <input class="input" type="text" name="wholename"/>
+                    </div>  
+                    <div>
+                        <label>Gender:</label>
+                        <select class="input" name="gender">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select> 
+                    </div>  
+                    <div>
+                            <label>Username:</label>
+                            <input class="input" type="text" name="username"/>
                     </div>
                     <div>
-                        <label>Full Name:</label>
-                        <input type="text" name="wholename"/>
-                    </div>    
-                    <div>
                         <label>Password:</label>
-                        <input type="password" name="password"/>
+                        <input class="input" type="password" name="password"/>
                     </div>
                     <div>
                         <input class="navButton" type="submit" value="Sign Up"/>

@@ -14,17 +14,17 @@
 
             var result = JSON.parse(Http.responseText);
 
-            document.getElementById("results").innerHTML = ""
-            html = "<table> ";
+            document.getElementById("resultsMen").innerHTML = ""
+            var html = "<table> ";
             html +="  <tr> <th>Rank</th>    <th>Climber</th>   <th>Score</th>   <th>Number of ascents</th>  </td>"
 
             // Loop through array and add table cells
-            for (var i=0; i<result.length; i++) {
+            for (var i=0; i<result["Men"].length; i++) {
                 html +="  <tr> "
                 html += "<td>" + String(i+1)+ "</td>";
-                html += "<td>" + result[i][0]+ "</td>";
-                html += "<td>" + String(Number( parseFloat( result[i][1]).toFixed(2)))+ " </td>";
-                html += "<td>" + result[i][2] + "</td>";
+                html += "<td>" + result["Men"][i][0]["wholename"]+ "</td>";
+                html += "<td>" + String(Number( parseFloat( result["Men"][i][1]).toFixed(2)))+ " </td>";
+                html += "<td>" + result["Men"][i][2] + "</td>";
                 html +=" </tr> "
 
                 // Break into next row
@@ -33,9 +33,32 @@
             html += "</tr></table>";
 
 
-            document.getElementById("results").innerHTML = html
+            document.getElementById("resultsMen").innerHTML = html
 
             
+
+
+            document.getElementById("resultsWomen").innerHTML = ""
+            html = "<table> ";
+            html +="  <tr> <th>Rank</th>    <th>Climber</th>   <th>Score</th>   <th>Number of ascents</th>  </td>"
+
+            // Loop through array and add table cells
+            for (var i=0; i<result["Women"].length; i++) {
+                html +="  <tr> "
+                html += "<td>" + String(i+1)+ "</td>";
+                html += "<td>" + result["Women"][i][0]["wholename"]+ "</td>";
+                html += "<td>" + String(Number( parseFloat( result["Women"][i][1]).toFixed(2)))+ " </td>";
+                html += "<td>" + result["Women"][i][2] + "</td>";
+                html +=" </tr> "
+
+                // Break into next row
+
+            }
+            html += "</tr></table>";
+
+
+            document.getElementById("resultsWomen").innerHTML = html
+
 
 
         }
@@ -67,8 +90,11 @@
 
         <div class="container row">
            <h1>Here are the results</h1>
-           <div id="results">
-                results go here
+           <div id="resultsMen">
+                Men's results
+           </div>
+           <div id="resultsWomen">
+                Women's results
            </div>
         </div>
     </body>

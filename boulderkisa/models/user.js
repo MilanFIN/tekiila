@@ -27,7 +27,13 @@ asd.User = sequelize.define('users', {
     },
     wholename: {
         type: Sequelize.STRING,
-        unique: true,
+        unique: false,
+        allowNull: false
+    },
+    gender: {
+        type:   Sequelize.ENUM,
+        values: ['Male', 'Female'],
+        unique: false,
         allowNull: false
     },
     password: {
