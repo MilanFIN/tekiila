@@ -248,44 +248,74 @@ app.get('/my_ascents_json', (req, res) => {
 
     if (req.session.user && req.cookies.user_sid) {
 
-		Boulder.findAll({attributes: ['number', 'color']} ).then(function (boulders) {
+		User.findAll({attributes: ['username', 'gender']} ).then(function (users) {
 
-			var result = {}
-			var numberOfAscentsByRoute = {}
+			var usersAndGenders = {}
 
-			boulders.forEach(function(boulder) {
-				numberOfAscentsByRoute[number] = 0
-
-				var climbed = "no";
-				var number = boulder.dataValues["number"]
-				var color = boulder.dataValues["color"]
-
-				result[number] = {"color": color, "climbed": climbed};
-
+			users.forEach(function(user) {
+				usersAndGenders[user.dataValues.username] = user.dataValues.gender;
 			});
-//where: { username: req.session.user.username }
-			Ascent.findAll({attributes: ["username", "number"]} ).then(function (ascents) {
-	
 
-				ascents.forEach(function(ascent) {
-					if (ascent.dataValues.username == req.session.user.username){
-						var climbed = "yes";
-						var number = ascent.dataValues["number"]
-						var color = result[number]["color"]
-		
-						result[number] = {"color": color, "climbed": climbed};
-					}
+			var myGender = usersAndGenders[req.session.user.username];
 
-		
+			Boulder.findAll({attributes: ['number', 'color']} ).then(function (boulders) {
+
+				var result = {}
+				var numberOfAscentsByRoute = {}
+
+				boulders.forEach(function(boulder) {
+					var number = boulder.dataValues["number"]
+
+					numberOfAscentsByRoute[number] = 0
+
+					var climbed = "no";
+					var number = boulder.dataValues["number"]
+					var color = boulder.dataValues["color"]
+
+					result[number] = {"color": color, "climbed": climbed};
+
 				});
-				res.json(result)
 
+	//where: { username: req.session.user.username }
+				Ascent.findAll({attributes: ["username", "number"]} ).then(function (ascents) {
+		
+					ascents.forEach(function(ascent) {
+						if (usersAndGenders[ascent.dataValues.username] == myGender){
+							var number = ascent.dataValues["number"];
+							numberOfAscentsByRoute[number] += 1;
+						}
+
+					});
+
+					ascents.forEach(function(ascent) {
+
+						if (ascent.dataValues.username == req.session.user.username){
+							var number = ascent.dataValues["number"]
+							var climbed = "yes";
+							var color = result[number]["color"]
+			
+							result[number] = {"color": color, "climbed": climbed};
+						}
+
+
+
+						//calculate amount of ascents per route that have the same gender as the user
+
+			
+					});
+
+					boulders.forEach(function(boulder) {
+						var number = boulder.dataValues["number"]
+	
+						result[number]["ascents"] = numberOfAscentsByRoute[number];
+	
+					});
+					res.json(result)
+
+				});
 			});
+
 		});
-
-
-
-
 
 	} else {
 		res.send("forbidden")
