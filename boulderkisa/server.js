@@ -225,8 +225,11 @@ app.get('/result_json', (req, res) => {
 				leads.forEach(function(lead) {
 					
 					var addition = 0;
+					var ascentAdd = 0;
 					if (lead.dataValues.type == "top") {
 						addition = 3;
+						ascentAdd = 1;
+
 					}
 					else if (lead.dataValues.type == "zone2") {
 						addition = 2;
@@ -237,9 +240,13 @@ app.get('/result_json', (req, res) => {
 
 					if (lead.dataValues.username in scoresMen) {
 						scoresMen[lead.dataValues.username].score += addition
+						scoresMen[lead.dataValues.username].ascents += ascentAdd
+
 					}
 					else if (lead.dataValues.username in scoresWomen) {
 						scoresWomen[lead.dataValues.username].score += addition
+						scoresWomen[lead.dataValues.username].ascents += ascentAdd
+
 					}
 					
 
