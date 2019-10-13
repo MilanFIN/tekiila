@@ -84,6 +84,40 @@ asd.Ascent = sequelize.define('ascents', {
 });
 
 
+// setup User model and its fields.
+asd.Route = sequelize.define('routes', {
+    number: {
+        type: Sequelize.STRING,
+        unique: true,
+        allowNull: false
+    },
+    color: {
+        type: Sequelize.STRING,
+        unique: false,
+        allowNull: false
+    }
+});
+
+asd.Lead = sequelize.define('leads', {
+	username: {
+        type: Sequelize.STRING,
+        unique: false,
+        allowNull: false
+    },
+    number: {
+        type: Sequelize.STRING,
+        unique: false,
+        allowNull: false
+    },
+    type: {
+        type:   Sequelize.ENUM,
+        values: ['zone1', 'zone2', 'top'],
+        unique: false,
+        allowNull: false
+    }
+});
+
+
 
 asd.User.prototype.validPassword = function(password) {
 	return bcrypt.compareSync(password, this.password);

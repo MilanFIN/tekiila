@@ -7,8 +7,8 @@
 
 
 
-				function populate(result) {
-					document.getElementById("addordelete").innerHTML = ""
+				function populateBoulder(result) {
+					document.getElementById("addordeleteboulder").innerHTML = ""
 					//var result = JSON.parse(Http.responseText);
 
 
@@ -20,16 +20,16 @@
 						
 						if (result[number].climbed === "no") {
 							var button = "<button type='button' class='addButton' onclick=addAscent('"+number+"');>Add ascent</button>";
-							document.getElementById("addordelete").innerHTML += button
+							document.getElementById("addordeleteboulder").innerHTML += button
 						}
 						else {
 							var button = "<button type='button' class='removeButton' onclick=removeAscent('"+number+"');>Remove ascent</button>";
-							document.getElementById("addordelete").innerHTML += button
+							document.getElementById("addordeleteboulder").innerHTML += button
 						}
 						current = result[number]
-						document.getElementById("addordelete").innerHTML += number + ", " +result[number].color + ", Ascents: "+ result[number].ascents
+						document.getElementById("addordeleteboulder").innerHTML += number + ", " +result[number].color + ", Ascents: "+ result[number].ascents
 
-						document.getElementById("addordelete").innerHTML += "<br>"
+						document.getElementById("addordeleteboulder").innerHTML += "<br>"
 					});
 
 				}
@@ -37,13 +37,13 @@
 
 				function get_ascents(){
 					const Http = new XMLHttpRequest();
-					const url='/my_ascents_json';
+					const url='/my_boulders_json';
 					Http.open("GET", url);
 					Http.send();
 		
 					Http.onreadystatechange = (e) => {
 
-						populate(JSON.parse(Http.responseText))
+						populateBoulder(JSON.parse(Http.responseText))
 					}
 				}
 
@@ -76,7 +76,6 @@
 					xhr.onreadystatechange = function() { // Call a function when the state changes.
 						if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
 							// Request finished. Do processing here.
-							console.log("done")
 							get_ascents();
 						}
 					}
@@ -85,12 +84,133 @@
 
 
 
-		
+				function addLead(number){
+					console.log(number)
+					var xhr = new XMLHttpRequest();
+					xhr.open("POST", '/add_lead', true);
 
+					//Send the proper header information along with the request
+					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+					xhr.onreadystatechange = function() { // Call a function when the state changes.
+						if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+							// Request finished. Do processing here.
+							get_leads();
+						}
+					}
+
+					var type = "top";
+					var params = "number="+number+"&"+"type="+type;
+					xhr.send(params);
+				}
+
+				function addZone1(number){
+					console.log(number)
+					var xhr = new XMLHttpRequest();
+					xhr.open("POST", '/add_lead', true);
+
+					//Send the proper header information along with the request
+					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+					xhr.onreadystatechange = function() { // Call a function when the state changes.
+						if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+							// Request finished. Do processing here.
+							get_leads();
+						}
+					}
+
+					var type = "zone1";
+					var params = "number="+number+"&"+"type="+type;
+					xhr.send(params);
+				}
+
+				function addZone2(number){
+					console.log(number)
+					var xhr = new XMLHttpRequest();
+					xhr.open("POST", '/add_lead', true);
+
+					//Send the proper header information along with the request
+					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+					xhr.onreadystatechange = function() { // Call a function when the state changes.
+						if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+							// Request finished. Do processing here.
+							get_leads();
+						}
+					}
+
+					var type = "zone2";
+					var params = "number="+number+"&"+"type="+type;
+					xhr.send(params);
+				}
+
+				function removeLead(number){
+					console.log(number)
+					var xhr = new XMLHttpRequest();
+					xhr.open("POST", '/remove_lead', true);
+
+					//Send the proper header information along with the request
+					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+					xhr.onreadystatechange = function() { // Call a function when the state changes.
+						if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+							// Request finished. Do processing here.
+							get_leads();
+						}
+					}
+
+					xhr.send("number="+number);
+				}
+
+		
+				function populateLead(result) {
+					document.getElementById("addordeletelead").innerHTML = ""
+					//var result = JSON.parse(Http.responseText);
+
+
+					var value;
+					var numbers = Object.keys(result)
+
+					numbers.forEach(number => {
+						
+						if (result[number].climbed === "no") {
+							var button2 = "<button type='button' class='addLeadButton' onclick=addLead('"+number+"');>Ascent</button>";
+							var button1 = "<button type='button' class='addLeadButton' onclick=addZone2('"+number+"');>Zone2</button>";
+							var button0 = "<button type='button' class='addLeadButton' onclick=addZone1('"+number+"');>Zone1</button>";
+
+							document.getElementById("addordeletelead").innerHTML += button0 + button1 + button2;
+						}
+						else {
+							var button = "<button type='button' class='removeButton' onclick=removeLead('"+number+"');>Remove ascent</button>";
+							document.getElementById("addordeletelead").innerHTML += button
+						}
+						current = result[number]
+						document.getElementById("addordeletelead").innerHTML += number + ", " +result[number].color + ", Zone1's: "+ result[number].zone1 + ", Zone2's: "+ result[number].zone2 + ", Ascents: "+ result[number].ascents
+
+						document.getElementById("addordeletelead").innerHTML += "<br>"
+
+					});
+					console.log(result);
+
+				}
+
+				
+				function get_leads(){
+					const Http = new XMLHttpRequest();
+					const url='/my_leads_json';
+					Http.open("GET", url);
+					Http.send();
+		
+					Http.onreadystatechange = (e) => {
+
+						populateLead(JSON.parse(Http.responseText))
+					}
+				}
 
 
 				get_ascents();
 
+				get_leads();
 				</script>
 		
 	
@@ -113,10 +233,14 @@
 
         <div class="container row">
 		   <h1>Here you can add and remove ascents</h1>
-		   <div id="addordelete">
-                results go here
-           </div>
-
+		   <h3>Boulder</h3>
+		   <div id="addordeleteboulder">
+                boulders go here
+		   </div>
+		   <h3>Lead</h3>
+		   <div id="addordeletelead">
+				leads go here
+	   		</div>
         </div>
     </body>
 </html>

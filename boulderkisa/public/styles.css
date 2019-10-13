@@ -105,6 +105,24 @@ th, td {
 
   }
 
+
+
+  .addLeadButton {
+	background-color: rgb(255,255,0);
+	border: none;
+	color: black;
+	padding: 9 18;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	margin-top:2px;
+	margin-right:10px;
+	max-width: 80;
+	width: 80;
+
+  }
+
   .addButton:hover {
 	background-color: rgb(255,204,0);
 

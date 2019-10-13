@@ -8,6 +8,8 @@ var Models = require('./models/user');
 var User = Models.User;
 var Boulder = Models.Boulder;
 var Ascent = Models.Ascent;
+var Route = Models.Route;
+var Lead = Models.Lead;
 
 // invoke an instance of express application.
 var app = express();
@@ -216,35 +218,65 @@ app.get('/result_json', (req, res) => {
 				}
 			});
 			console.log(scoresMen);
-			console.log(scoresWomen);
 
 
-			
-			var result = {};//[];
-			result["Men"] = [];
-			result["Women"] = [];
+			Lead.findAll({attributes: ["username", "number", 'type']} ).then(function (leads) {
+	
+				leads.forEach(function(lead) {
+					
+					var addition = 0;
+					if (lead.dataValues.type == "top") {
+						addition = 3;
+					}
+					else if (lead.dataValues.type == "zone2") {
+						addition = 2;
+					}
+					else if (lead.dataValues.type == "zone1") {
+						addition = 0;
+					}
 
-			for (var user in scoresMen) {
-				result["Men"].push([usersAndNames[user], scoresMen[user].score, scoresMen[user].ascents]);
-			}
+					if (lead.dataValues.username in scoresMen) {
+						scoresMen[lead.dataValues.username].score += addition
+					}
+					else if (lead.dataValues.username in scoresWomen) {
+						scoresWomen[lead.dataValues.username].score += addition
+					}
+					
+
+				});
+
+				console.log(scoresMen);
+
 			
-			result["Men"].sort(function(a, b) {
-				return b[1] - a[1];
-			});		
-			for (var user in scoresWomen) {
-				result["Women"].push([usersAndNames[user], scoresWomen[user].score, scoresWomen[user].ascents]);
-			}
-			
-			result["Women"].sort(function(a, b) {
-				return b[1] - a[1];
-			});		
-			res.json(result);
+				var result = {};//[];
+				result["Men"] = [];
+				result["Women"] = [];
+	
+				for (var user in scoresMen) {
+					result["Men"].push([usersAndNames[user], scoresMen[user].score, scoresMen[user].ascents]);
+				}
+				
+				result["Men"].sort(function(a, b) {
+					return b[1] - a[1];
+				});		
+				for (var user in scoresWomen) {
+					result["Women"].push([usersAndNames[user], scoresWomen[user].score, scoresWomen[user].ascents]);
+				}
+				
+				result["Women"].sort(function(a, b) {
+					return b[1] - a[1];
+				});		
+				res.json(result);
+
+			});
+
+
 			
 		});
 	});
 });
 
-app.get('/my_ascents_json', (req, res) => {
+app.get('/my_boulders_json', (req, res) => {
 
     if (req.session.user && req.cookies.user_sid) {
 
@@ -296,11 +328,6 @@ app.get('/my_ascents_json', (req, res) => {
 			
 							result[number] = {"color": color, "climbed": climbed};
 						}
-
-
-
-						//calculate amount of ascents per route that have the same gender as the user
-
 			
 					});
 
@@ -323,6 +350,101 @@ app.get('/my_ascents_json', (req, res) => {
 
 });
 
+
+app.get('/my_leads_json', (req, res) => {
+    if (req.session.user && req.cookies.user_sid) {
+
+		User.findAll({attributes: ['username', 'gender']} ).then(function (users) {
+
+			var usersAndGenders = {}
+
+			users.forEach(function(user) {
+				usersAndGenders[user.dataValues.username] = user.dataValues.gender;
+			});
+
+			var myGender = usersAndGenders[req.session.user.username];
+
+
+
+			Route.findAll({attributes: ['number', 'color']} ).then(function (routes) {
+
+				var result = {}
+				var numberOfAscentsByRoute = {}
+				var numberOfZone1ByRoute = {}
+				var numberOfZone2ByRoute = {}
+				routes.forEach(function(route) {
+					var number = route.dataValues["number"]
+
+					numberOfAscentsByRoute[number] = 0;
+					numberOfZone1ByRoute[number] = 0;
+					numberOfZone2ByRoute[number] = 0;
+
+
+					var climbed = "no";
+					var number = route.dataValues["number"]
+					var color = route.dataValues["color"]
+
+					result[number] = {"color": color, "climbed": climbed};
+
+				});
+				Lead.findAll({attributes: ["username", "number", 'type']} ).then(function (leads) {
+	
+					leads.forEach(function(lead) {
+						if (usersAndGenders[lead.dataValues.username] == myGender){
+							var number = lead.dataValues["number"];
+
+							if (lead.dataValues.type == "top") {
+								numberOfAscentsByRoute[number] += 1;
+							}
+							else if (lead.dataValues.type == "zone1"){
+								numberOfZone1ByRoute[number] += 1;
+							}
+							else if (lead.dataValues.type == "zone2"){
+								numberOfZone2ByRoute[number] += 1;
+							}
+						}
+					});
+
+
+					leads.forEach(function(lead) {
+
+						if (lead.dataValues.username == req.session.user.username){
+							var number = lead.dataValues["number"]
+							var climbed = lead.dataValues.type;
+							var color = result[number]["color"]
+			
+							result[number] = {"color": color, "climbed": climbed};
+						}
+
+					});
+
+					routes.forEach(function(route) {
+						var number = route.dataValues["number"]
+	
+						result[number]["ascents"] = numberOfAscentsByRoute[number];
+						result[number]["zone1"] = numberOfZone1ByRoute[number];
+						result[number]["zone2"] = numberOfZone2ByRoute[number];
+
+	
+					});
+					console.log(result)
+					res.json(result)
+
+				});
+				
+
+
+
+			});
+
+
+		});
+	}
+	else {
+		res.send("forbidden")
+	}
+
+});
 
 
 // POST method route
@@ -361,6 +483,48 @@ app.post('/remove_ascent', function (req, res) {
 		res.send("forbidden")
 	}
 });
+
+
+
+
+// POST method route
+app.post('/add_lead', function (req, res) {
+	if (req.session.user && req.cookies.user_sid) {
+		//username: req.session.user.username
+		console.log(req.body)
+        Lead.create({
+            username: req.session.user.username,
+			number: req.body.number,
+			type: req.body.type
+		})
+		res.send("done")
+
+
+	}
+	else {
+		res.send("forbidden")
+	}
+});
+
+// POST method route
+app.post('/remove_lead', function (req, res) {
+	if (req.session.user && req.cookies.user_sid) {
+		//username: req.session.user.username
+        Lead.destroy({
+			where: {
+				username:req.session.user.username,
+				number:req.body.number
+			}        
+		});
+		res.send("done")
+
+	}
+	else {
+		res.send("forbidden")
+	}
+});
+
+
 
 // route for user logout
 app.get('/logout', (req, res) => {
