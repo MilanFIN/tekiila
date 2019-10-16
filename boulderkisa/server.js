@@ -133,7 +133,7 @@ app.get('/results', (req, res) => {
 app.get('/result_json', (req, res) => {
 
 	//calculate total number of ascents for a route, and send that to browser?
-	Ascent.findAll({attributes: ['username', 'number']} ).then(function (ascents) {
+	Ascent.findAll({attributes: ['username', 'number', 'attempts']} ).then(function (ascents) {
 
 		var ascentsByRoute = {}
 		ascents.forEach(function(ascent) {
@@ -190,13 +190,15 @@ app.get('/result_json', (req, res) => {
 					scoresMen[user] = {}
 					scoresMen[user].score = 0
 					scoresMen[user].ascents = 0
+					scoresMen[user].attempts = 0
+
 	
 				}
 				else if (usersAndNames[user].gender == "Female") {
 					scoresWomen[user] = {}
 					scoresWomen[user].score = 0
 					scoresWomen[user].ascents = 0
-	
+					scoresWomen[user].attempts = 0
 				}
 			}
 
@@ -204,7 +206,7 @@ app.get('/result_json', (req, res) => {
 			Object.keys(ascentsByRouteMen).forEach(function(key,index) {
 				var users = ascentsByRouteMen[key];
 				for (var i = 0; i < users.length; i++) {
-					scoresMen[users[i]].score += 100/users.length
+					scoresMen[users[i]].score += 1//100/users.length
 					scoresMen[users[i]].ascents += 1
 
 				}
@@ -217,7 +219,24 @@ app.get('/result_json', (req, res) => {
 
 				}
 			});
-			console.log(scoresMen);
+
+
+
+			ascents.forEach(function(ascent) {
+				var user = ascent.dataValues.username
+				var attempts = ascent.dataValues.attempts
+
+				if (user in scoresMen) {
+					scoresMen[user].attempts += attempts;
+				}
+				else if (user in scoresWomen) {
+					scoresWomen[user].attempts += attempts;
+				}
+			});	
+
+			//console.log(scoresMen);
+
+
 
 
 			Lead.findAll({attributes: ["username", "number", 'type']} ).then(function (leads) {
@@ -235,7 +254,7 @@ app.get('/result_json', (req, res) => {
 						addition = 2;
 					}
 					else if (lead.dataValues.type == "zone1") {
-						addition = 0;
+						addition = 1;
 					}
 
 					if (lead.dataValues.username in scoresMen) {
@@ -260,18 +279,28 @@ app.get('/result_json', (req, res) => {
 				result["Women"] = [];
 	
 				for (var user in scoresMen) {
-					result["Men"].push([usersAndNames[user], scoresMen[user].score, scoresMen[user].ascents]);
+					result["Men"].push([usersAndNames[user], scoresMen[user].score, scoresMen[user].ascents, scoresMen[user].attempts]);
 				}
 				
 				result["Men"].sort(function(a, b) {
-					return b[1] - a[1];
+					var n = b[1] - a[1];
+					if (n !== 0) {
+						return n;
+					}
+				
+					return a[3] - b[3];
 				});		
 				for (var user in scoresWomen) {
-					result["Women"].push([usersAndNames[user], scoresWomen[user].score, scoresWomen[user].ascents]);
+					result["Women"].push([usersAndNames[user], scoresWomen[user].score, scoresWomen[user].ascents, scoresWomen[user].attempts]);
 				}
 				
 				result["Women"].sort(function(a, b) {
-					return b[1] - a[1];
+					var n = b[1] - a[1];
+					if (n !== 0) {
+						return n;
+					}
+				
+					return a[3] - b[3];
 				});		
 				res.json(result);
 
@@ -460,7 +489,8 @@ app.post('/add_ascent', function (req, res) {
 		//username: req.session.user.username
         Ascent.create({
             username: req.session.user.username,
-            number: req.body.number
+			number: req.body.number,
+			attempts: req.body.attempts
 		})
 		res.send("done")
 

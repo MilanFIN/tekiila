@@ -16,7 +16,7 @@
 
             document.getElementById("resultsMen").innerHTML = ""
             var html = "<table> ";
-            html +="  <tr> <th>Rank</th>    <th>Climber</th>   <th>Score</th>   <th>Number of ascents</th>  </td>"
+            html +="  <tr> <th>Rank</th>    <th>Climber</th>   <th>Score</th> <th>Attempts</th>  <th>Number of ascents</th>  </td>"
 
             // Loop through array and add table cells
             for (var i=0; i<result["Men"].length; i++) {
@@ -24,6 +24,8 @@
                 html += "<td>" + String(i+1)+ "</td>";
                 html += "<td>" + result["Men"][i][0]["wholename"]+ "</td>";
                 html += "<td>" + String(Number( parseFloat( result["Men"][i][1]).toFixed(2)))+ " </td>";
+                html += "<td>" + result["Men"][i][3]+ " </td>";
+
                 html += "<td>" + result["Men"][i][2] + "</td>";
                 html +=" </tr> "
 
@@ -40,7 +42,7 @@
 
             document.getElementById("resultsWomen").innerHTML = ""
             html = "<table> ";
-            html +="  <tr> <th>Rank</th>    <th>Climber</th>   <th>Score</th>   <th>Number of ascents</th>  </td>"
+                html +="  <tr> <th>Rank</th>    <th>Climber</th>   <th>Score</th> <th>Attempts</th>  <th>Number of ascents</th>  </td>"
 
             // Loop through array and add table cells
             for (var i=0; i<result["Women"].length; i++) {
@@ -48,6 +50,7 @@
                 html += "<td>" + String(i+1)+ "</td>";
                 html += "<td>" + result["Women"][i][0]["wholename"]+ "</td>";
                 html += "<td>" + String(Number( parseFloat( result["Women"][i][1]).toFixed(2)))+ " </td>";
+                html += "<td>" + result["Women"][i][3]+ " </td>";
                 html += "<td>" + result["Women"][i][2] + "</td>";
                 html +=" </tr> "
 

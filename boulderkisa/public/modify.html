@@ -20,7 +20,8 @@
 						
 						if (result[number].climbed === "no") {
 							var button = "<button type='button' class='addButton' onclick=addAscent('"+number+"');>Add ascent</button>";
-							document.getElementById("addordeleteboulder").innerHTML += button
+							var attempts = "<input type='text' class='attemptField' id='attempt"+number+"' placeholder='Attempts'>";
+							document.getElementById("addordeleteboulder").innerHTML += attempts + " " + button;
 						}
 						else {
 							var button = "<button type='button' class='removeButton' onclick=removeAscent('"+number+"');>Remove ascent</button>";
@@ -49,7 +50,6 @@
 
 
 				function addAscent(number){
-					console.log(number)
 					var xhr = new XMLHttpRequest();
 					xhr.open("POST", '/add_ascent', true);
 
@@ -62,7 +62,15 @@
 							get_ascents();
 						}
 					}
-					xhr.send("number="+number);
+					var attemptsStr = document.getElementById("attempt"+number).value;
+					attempts = parseInt(attemptsStr);
+					console.log(isNaN(attempts), Number.isInteger(attempts), attempts);
+					if (Number.isInteger(attempts) && attempts == attemptsStr && attempts > 0) {
+						xhr.send("number="+number + "&"+"attempts="+attempts);
+						console.log(number)
+
+					}
+
 				}
 
 				function removeAscent(number){
@@ -162,7 +170,7 @@
 					xhr.send("number="+number);
 				}
 
-		
+
 				function populateLead(result) {
 					document.getElementById("addordeletelead").innerHTML = ""
 					//var result = JSON.parse(Http.responseText);

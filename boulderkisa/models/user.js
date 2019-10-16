@@ -80,6 +80,11 @@ asd.Ascent = sequelize.define('ascents', {
         type: Sequelize.STRING,
         unique: false,
         allowNull: false
+    },
+    attempts: {
+        type: Sequelize.INTEGER,
+        unique: false,
+        allowNull: false
     }
 });
 
