@@ -114,7 +114,6 @@ app.route('/login')
     });
 
 
-// route for user's dashboard
 app.get('/modify', (req, res) => {
     if (req.session.user && req.cookies.user_sid) {
 		console.log(req.session.user)
@@ -125,9 +124,13 @@ app.get('/modify', (req, res) => {
 });
 
 
-// route for user's dashboard
 app.get('/results', (req, res) => {
 	res.sendFile(__dirname + '/public/results.html');
+});
+
+
+app.get('/info', (req, res) => {
+	res.sendFile(__dirname + '/public/info.html');
 });
 
 app.get('/result_json', (req, res) => {

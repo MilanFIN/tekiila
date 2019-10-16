@@ -1,7 +1,8 @@
 body {
 	margin: 0;
 	background-color: #111;
-	color: white;
+	color: #DDD;
+
   }
   
 label {
@@ -84,10 +85,22 @@ th, td {
 	margin-top:10px
   }
 
+
+
   .navButton:hover {
 	background-color: rgb(255,204,0);
 
   }
+
+
+
+.attemptField {
+	margin-top:2px;
+	margin-right:10px;
+	max-width: 80px;
+	width: 80px;
+
+}
 
   .addButton {
 	background-color: rgb(255,255,0);
