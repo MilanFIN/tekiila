@@ -490,6 +490,13 @@ app.get('/my_leads_json', (req, res) => {
 app.post('/add_ascent', function (req, res) {
 	if (req.session.user && req.cookies.user_sid) {
 		//username: req.session.user.username
+        Ascent.destroy({
+			where: {
+				username:req.session.user.username,
+				number:req.body.number
+			}        
+		});
+
         Ascent.create({
             username: req.session.user.username,
 			number: req.body.number,
@@ -531,8 +538,14 @@ app.post('/remove_ascent', function (req, res) {
 app.post('/add_lead', function (req, res) {
 	if (req.session.user && req.cookies.user_sid) {
 		//username: req.session.user.username
-		console.log(req.body)
-        Lead.create({
+        Lead.destroy({
+			where: {
+				username:req.session.user.username,
+				number:req.body.number
+			}        
+		});
+
+		Lead.create({
             username: req.session.user.username,
 			number: req.body.number,
 			type: req.body.type
