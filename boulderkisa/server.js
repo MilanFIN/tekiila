@@ -217,7 +217,7 @@ app.get('/result_json', (req, res) => {
 			Object.keys(ascentsByRouteWomen).forEach(function(key,index) {
 				var users = ascentsByRouteWomen[key];
 				for (var i = 0; i < users.length; i++) {
-					scoresWomen[users[i]].score += 100/users.length
+					scoresWomen[users[i]].score += 1;
 					scoresWomen[users[i]].ascents += 1
 
 				}
