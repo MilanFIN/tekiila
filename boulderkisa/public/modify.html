@@ -20,7 +20,7 @@
 						
 						if (result[number].climbed === "no") {
 							var button = "<button type='button' class='addButton' onclick=addAscent('"+number+"');>Add ascent</button>";
-							var attempts = "<input type='text' class='attemptField' id='attempt"+number+"' placeholder='Attempts'>";
+							var attempts = "<input type='number' value='1' min='1' class='attemptField' id='attempt"+number+"' placeholder='Attempts'>";
 							document.getElementById("addordeleteboulder").innerHTML += attempts + " " + button;
 						}
 						else {

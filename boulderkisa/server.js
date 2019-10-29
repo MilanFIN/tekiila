@@ -12,7 +12,19 @@ var Route = Models.Route;
 var Lead = Models.Lead;
 
 
-var allowLogin = false;
+
+
+//
+//
+//SET TO TRUE TO ALLOW NEW USERS AND EXISTING LOGINS
+var allowLogin = true;
+//
+//
+//
+
+
+
+
 
 // invoke an instance of express application.
 var app = express();
@@ -123,6 +135,9 @@ app.route('/login')
             }
         });
 
+		}
+		else {
+			res.redirect('/login');
 		}
 
     });
@@ -503,6 +518,7 @@ app.get('/my_leads_json', (req, res) => {
 // POST method route
 app.post('/add_ascent', function (req, res) {
 	if (req.session.user && req.cookies.user_sid) {
+		if (!isNaN(req.body.number) && req.body.number > 0){
 		//username: req.session.user.username
         Ascent.destroy({
 			where: {
@@ -517,6 +533,11 @@ app.post('/add_ascent', function (req, res) {
 			attempts: req.body.attempts
 		})
 		res.send("done")
+
+		}
+		else {
+			res.send("mangled input")
+		}
 
 
 	}
