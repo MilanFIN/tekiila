@@ -11,6 +11,9 @@ var Ascent = Models.Ascent;
 var Route = Models.Route;
 var Lead = Models.Lead;
 
+
+var allowLogin = false;
+
 // invoke an instance of express application.
 var app = express();
 
@@ -33,7 +36,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        expires: 600000
+        expires: 6000000
     }
 }));
 
@@ -76,19 +79,26 @@ app.route('/signup')
         res.sendFile(__dirname + '/public/signup.html');
     })
     .post((req, res) => {
-        User.create({
-            username: req.body.username,
-            wholename: req.body.wholename,
-			password: req.body.password,
-			gender: req.body.gender
-        })
-        .then(user => {
-            req.session.user = user.dataValues;
-            res.redirect('/modify');
-        })
-        .catch(error => {
-            res.redirect('/signup');
-        });
+		if(allowLogin)
+		{
+			User.create({
+				username: req.body.username,
+				wholename: req.body.wholename,
+				password: req.body.password,
+				gender: req.body.gender
+			})
+			.then(user => {
+				req.session.user = user.dataValues;
+				res.redirect('/modify');
+			})
+			.catch(error => {
+				res.redirect('/signup');
+			});
+	
+		}
+		else {
+			res.redirect("/signup")
+		}
     });
 
 
@@ -98,10 +108,11 @@ app.route('/login')
         res.sendFile(__dirname + '/public/login.html');
     })
     .post((req, res) => {
-        var username = req.body.username,
+		if (allowLogin) {
+			var username = req.body.username,
             password = req.body.password;
 
-        User.findOne({ where: { username: username } }).then(function (user) {
+        	User.findOne({ where: { username: username } }).then(function (user) {
             if (!user) {
                 res.redirect('/login');
             } else if (!user.validPassword(password)) {
@@ -111,6 +122,9 @@ app.route('/login')
                 res.redirect('/modify');
             }
         });
+
+		}
+
     });
 
 
