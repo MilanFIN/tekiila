@@ -44,7 +44,7 @@ app.use(cookieParser());
 // initialize express-session to allow us track the logged-in user across sessions.
 app.use(session({
     key: 'user_sid',
-    secret: 'somerandonstuffs',
+    secret: 'removed from git',
     resave: false,
     saveUninitialized: false,
     cookie: {
