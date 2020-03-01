@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Bommariradio</title>
+  <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+  <audio  id="player" >
+    <source src="asdf" type="audio/mpeg">
+  No audio
+  </audio>
+	  <div>
+    Now playing:<br>
+    <span id="name">Song name goes here when it has finished loading<span>
+	  </div>
+ 
+
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+	<script>
+    play = true;
+    document.getElementById("player").autoplay = true;
+    var socket = io();
+
+	  $(function () {
+
+
+		socket.on('play', function(file, name, time){
+      if (play){
+        document.getElementById("player").src = file;
+        document.getElementById("player").currentTime = time;
+        document.getElementById("player").load();
+        document.getElementById("name").innerHTML = name;
+
+      }
+		});
+
+	  });
+
+    function playStop(){
+      if (document.getElementById("playButton").textContent == "Stop"){
+        play = false;
+        document.getElementById("playButton").textContent = "Play";
+        document.getElementById("player").pause();
+      }
+      else {
+        play = true;
+        document.getElementById("playButton").textContent = "Stop";
+        socket.emit('requestPlayBack');
+
+      }
+
+    }
+
+	function renameFile(){
+		socket.emit('renameFile', document.getElementById("pinCode").value, document.getElementById("newName").value)
+		document.getElementById("pinCode").value = "";
+		document.getElementById("newName").value = "";
+	}
+
+  </script>
+
+
+  <button id="playButton" type="button" onClick="playStop()">Stop</button> <br><br>
+  Rename current song:<br>
+  (Only give the song name without the folder or .mp3 ending)<br>
+  <input id="pinCode" type="password" placeholder="passwd"> <br>
+  <input id="newName" type="text" placeholder="new name"> <br>
+  <button id="renameButton" type="button" onClick="renameFile()">Rename current song</button> <br><br>
+
+
+</body>
+</html>
