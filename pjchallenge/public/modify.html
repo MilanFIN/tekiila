@@ -1,0 +1,161 @@
+<html>
+    <head>
+			<title>PJ-challenge 2022</title>
+	        <link rel="stylesheet" href="styles.css">
+
+        <script>
+
+
+
+				function populateBoulder(result) {
+					document.getElementById("addordeleteboulder").innerHTML = ""
+					//var result = JSON.parse(Http.responseText);
+
+
+					var value;
+					var numbers = Object.keys(result)
+
+					numbers.forEach(number => {
+
+						
+						if (result[number].climbed === "no") {
+							var button = "<button type='button' class='addButton' onclick=addAscent('"+number+"');>Add ascent</button>";
+							var attempts = "<input type='number' value='1' min='1' class='attemptField' id='attempt"+number+"' placeholder='Attempts'>";
+							document.getElementById("addordeleteboulder").innerHTML += " " +button//attempts + " " + button; 
+						}
+						else {
+							var button = "<button type='button' class='removeButton' onclick=removeAscent('"+number+"');>Remove ascent</button>";
+							document.getElementById("addordeleteboulder").innerHTML += button
+						}
+						current = result[number]
+						document.getElementById("addordeleteboulder").innerHTML += number + ", " +result[number].color + ", Ascents: "+ result[number].ascents
+
+						document.getElementById("addordeleteboulder").innerHTML += "<br>"
+					});
+
+				}
+
+
+				function get_ascents(){
+					var xhr = new XMLHttpRequest();
+					const url='/my_boulders_json';
+					xhr.open("GET", url);
+
+
+					xhr.onreadystatechange = function() { // Call a function when the state changes.
+						if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+							let ascents =  JSON.parse(xhr.responseText)
+
+							populateBoulder(ascents)
+
+						}
+					}
+
+
+					xhr.send();
+		
+
+					
+					/*
+					Http.onreadystatechange = (e) => {
+						console.log()
+						if (Http.responseText !== "") {
+							let ascents = {}
+							try {
+								ascents =  JSON.parse(Http.responseText)
+
+							}
+							catch {
+								
+							}
+							//JSON.parse(Http.responseText)
+							//console.log(ascents)
+							//console.log('{"1":{"color":"green","climbed":"no","ascents":"1"}}' == Http.responseText)
+							populateBoulder(ascents)
+
+							}
+						}
+					}
+					*/
+				}
+
+				function addAscent(number){
+					var xhr = new XMLHttpRequest();
+					xhr.open("POST", '/add_ascent', true);
+
+					//Send the proper header information along with the request
+					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+					xhr.onreadystatechange = function() { // Call a function when the state changes.
+						if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+							// Request finished. Do processing here.
+							console.log("add")
+
+							get_ascents()
+						}
+					}
+					xhr.send("number="+number) //+ "&"+"attempts="+attempts);
+
+				
+
+				}
+
+				function removeAscent(number){
+					var xhr = new XMLHttpRequest();
+					xhr.open("POST", '/remove_ascent', true);
+
+					//Send the proper header information along with the request
+					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+					xhr.onreadystatechange = function() { // Call a function when the state changes.
+						if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+							// Request finished. Do processing here.
+							console.log("remove")
+							get_ascents()
+							
+						}
+					}
+					xhr.send("number="+number);
+				}
+
+
+
+				
+
+
+				get_ascents();
+
+				</script>
+		
+	
+	
+	</head>
+    <body class="container">
+        <div >
+            <h1>PJ-challenge 2022</h1>
+        </div>
+
+        <div class="navbar">
+            <a  href="/results">Results</a>
+			<a class="active" href="/modify">Add or remove ascents</a>
+			<a href="/info" >Info</a>
+
+            <a href="/signup">Sign Up</a>
+
+            
+
+            <a class="onRight" href="/logout">Log Out</a>
+        </div>
+
+        <div class="container row">
+		   <h1>Here you can add and remove ascents</h1>
+		   <h3>Boulders:</h3>
+		   <div id="addordeleteboulder">
+                boulders go here
+		   </div>
+
+        </div>
+		<br>
+		<br>
+    </body>
+</html>

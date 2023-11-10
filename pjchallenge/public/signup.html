@@ -1,0 +1,56 @@
+<html>
+    <head>
+			<title>PJ-challenge 2022</title>
+			<link rel="stylesheet" href="styles.css">
+
+    </head>
+    <body class="container">
+        <div >
+            <h1>PJ-challenge 2022</h1>
+        </div>
+
+        <div class="navbar">
+            <a href="/results">Results</a>
+			<a href="/modify">Add or remove ascents</a>
+			<a href="/info" >Info</a>
+
+            <a  href="/signup" class="active">Sign Up</a>
+
+
+            <a class="onRight" href="/logout">Log Out</a>
+        </div>
+
+        <div class="container row">
+            <div class="jumbotron col-sm-4 pull-center">
+                <h3>Sign up here</h3>
+
+                <form action="/signup" method="post">
+                    <div>
+                        <label>Full Name:</label>
+                        <input class="input" type="text" name="wholename"/>
+                    </div>  
+                    <div>
+                        <label>Division:</label>
+                        <select class="input" name="gender">
+                            <option value="Male">Men</option>
+                            <option value="Female">Women</option>
+                            <option value="Routesetter">Routesetter</option>
+
+                        </select> 
+                    </div>  
+                    <div>
+                            <label>Username:</label>
+                            <input class="input" type="text" name="username"/>
+                    </div>
+                    <div>
+                        <label>Password:</label>
+                        <input class="input" type="password" name="password"/>
+                    </div>
+                    <div>
+                        <input class="navButton" type="submit" value="Sign Up"/>
+                    </div>
+                </form>                  
+            </div>          
+        </div>
+    </body>
+</html>

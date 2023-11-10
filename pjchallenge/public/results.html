@@ -1,0 +1,137 @@
+<html>
+    <head>
+        <title>PJ-challenge 2022</title>
+    
+        <link rel="stylesheet" href="styles.css">
+        <script>
+        
+            function populateTable(elementName, category, json) {
+                document.getElementById(elementName).innerHTML = ""
+                    var html = "<table> ";
+                    html +="  <tr> <th>Rank</th>    <th>Climber</th>   <th>Score</th> <th>Number of ascents</th>  </td>"
+
+                    // Loop through array and add table cells
+                    for (var i=0; i<json[category].length; i++) {
+
+                        html +="  <tr> "
+
+                        var score = String(Number( parseFloat( json[category][i][1]).toFixed(2)))
+                        if (i != 0) {
+                            var jDiff = 0;
+                            for(var j =i-1; j >= 0;j--) {
+                                var previousScore = String(Number( parseFloat( json[category][j][1]).toFixed(2)))
+                                if (score === previousScore) {
+                                    jDiff += 1;
+                                }
+                                else {
+                                    break;
+                                }
+
+                            }
+                            html += "<td>" + String(i+1-jDiff)+ "</td>";
+
+                            
+                        }
+                        else {
+                            html += "<td>" + String(i+1)+ "</td>";
+
+                        }
+
+
+                        html += "<td>" + json[category][i][0]["wholename"]+ "</td>";
+                        html += "<td>" + score+ " </td>";
+
+                        html += "<td>" + json[category][i][2] + "</td>";
+                        html +=" </tr> "
+
+                        // Break into next row
+
+                    }
+                    html += "</tr></table>";
+
+
+                    document.getElementById(elementName).innerHTML = html
+
+            }
+
+            function fetchResults() {
+                const Http = new XMLHttpRequest();
+                const url='/result_json';
+                Http.open("GET", url);
+                Http.send();
+
+                Http.onreadystatechange = (e) => {
+
+                    var result = JSON.parse(Http.responseText);
+
+                    populateTable("resultsMen", "Men", result);
+                    populateTable("resultsWomen", "Women", result);
+                    populateTable("resultsRoutesetters", "Routesetters", result);
+
+
+                }
+            }
+
+
+
+        </script>
+    </head>
+    <body>
+
+
+        
+        <div >
+            <h1>PJ-challenge 2022</h1>
+        </div>
+
+        <div class="navbar">
+            <a class="active" href="/results">Results</a>
+            <a href="/modify">Add or remove ascents</a>
+            <a href="/info" >Info</a>
+
+            <a href="/signup">Sign Up</a>
+
+            
+
+            <a class="onRight" href="/logout">Log Out</a>
+        </div>
+
+
+
+
+        <div>
+            <h1>Results</h1>
+            <div id="resultWrapper">
+                <div class="resultTable">
+                    <h3>Men:</h3>
+                    <div id="resultsMen" >
+                        Men's results
+                    </div>
+    
+                </div>
+                <div class="resultTable">
+
+                    <h3>Women:</h3>
+                    <div id="resultsWomen" class="resultTable">
+                        Women's results
+                    </div>
+                </div>
+                <div class="resultTable">
+                    <h3>Routesetters:</h3>
+                    <div id="resultsRoutesetters" class="resultTable">
+                        Routesetter's results
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </body>
+
+    <script>
+        fetchResults();
+        setInterval(function(){ 
+            fetchResults();  
+        }, 15000);   
+ </script>
+</html>

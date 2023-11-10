@@ -1,0 +1,171 @@
+body {
+	margin: 0;
+	background-color: #111;
+	color: #DDD;
+
+  }
+  
+label {
+	width: 100px;
+	max-width: 100px;
+	display:inline-block;
+	margin-top: 3px;
+}
+
+.input {
+	width: 200px;
+	max-width: 200px;
+	display:inline-block;
+	margin-top: 3px;
+
+}
+
+
+
+
+
+
+th {
+	background-color: rgb(255,255,0);
+	color: black;
+}
+
+td {
+	background-color: #222;
+	color: white;
+}
+
+th, td {
+	text-align: left;
+	padding: 8px;
+  }
+
+  
+
+
+
+  .navbar {
+	overflow: hidden;
+	background-color: #222;
+  }
+  
+  .navbar a {
+	float: left;
+	color: #f2f2f2;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	font-size: 17px;
+  }
+  
+  .navbar a:hover {
+	background-color: rgb(255,204,0);
+	color: black;
+  }
+  
+  .navbar a.active {
+	background-color: rgb(255,255,0);
+	color: black;
+  }
+
+    
+  .navbar a.onRight {
+	float: right;
+  }
+
+  .navButton {
+	background-color: rgb(255,255,0);
+	border: none;
+	color: black;
+	padding: 12 24;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	margin-top:10px
+  }
+
+
+
+  .navButton:hover {
+	background-color: rgb(255,204,0);
+
+  }
+
+
+
+.attemptField {
+	margin-top:2px;
+	margin-right:10px;
+	max-width: 80px;
+	width: 80px;
+
+}
+
+.addButton {
+background-color: rgb(255,255,0);
+border: none;
+color: black;
+padding: 9 18;
+text-align: center;
+text-decoration: none;
+display: inline-block;
+font-size: 16px;
+margin-top:2px;
+margin-right:10px;
+max-width: 160px;
+width: 160px;
+
+}
+
+
+
+.addLeadButton {
+background-color: rgb(255,255,0);
+border: none;
+color: black;
+padding: 9 18;
+text-align: center;
+text-decoration: none;
+display: inline-block;
+font-size: 16px;
+margin-top:2px;
+margin-right:10px;
+max-width: 80;
+width: 80;
+
+}
+
+.addButton:hover {
+background-color: rgb(255,204,0);
+
+}
+
+.removeButton {
+	background-color: #555;
+	border: none;
+	color: black;
+	padding: 9 18;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	margin-top:2px;
+	margin-right:10px;
+	max-width: 160px;
+	width: 160px;
+
+}
+
+.removeButton:hover {
+	background-color: rgb(255,204,0);
+
+}
+
+
+.resultTable {
+	float:left; 
+	width: "33%";
+
+	
+}
